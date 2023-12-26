@@ -1,3 +1,6 @@
+using Microsoft.EntityFrameworkCore;
+using vet_backend.Models;
+
 namespace vet_backend
 {
     public class Program
@@ -12,6 +15,12 @@ namespace vet_backend
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Add context
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
+            });
 
             var app = builder.Build();
 
