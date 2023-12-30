@@ -7,11 +7,11 @@ namespace vet_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MasccotaController : ControllerBase
+    public class MascotaController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public MasccotaController(ApplicationDbContext context)
+        public MascotaController(ApplicationDbContext context)
         {
             _context = context;
         }

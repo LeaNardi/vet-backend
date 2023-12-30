@@ -22,8 +22,16 @@ namespace vet_backend
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
             });
 
-            var app = builder.Build();
+            
 
+            // Cors
+            builder.Services.AddCors(options => options.AddPolicy("AllowWebApp",
+                    builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+                ));
+
+
+
+            var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -35,6 +43,7 @@ namespace vet_backend
 
             app.UseAuthorization();
 
+            app.UseCors("AllowWebApp");
 
             app.MapControllers();
 
