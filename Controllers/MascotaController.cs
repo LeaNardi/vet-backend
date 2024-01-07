@@ -83,5 +83,37 @@ namespace vet_backend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, Mascota mascota)
+        {
+            try
+            {
+                if(id != mascota.Id)
+                {
+                    return BadRequest();
+                }
+
+                var mascotaBase = await _context.Mascotas.FindAsync(id);
+                if (mascota == null)
+                {
+                    return NotFound();
+                }
+
+                mascotaBase.Nombre = mascota.Nombre;
+                mascotaBase.Raza = mascota.Raza;
+                mascotaBase.Edad = mascota.Edad;
+                mascotaBase.Peso = mascota.Peso;
+                mascotaBase.Color = mascota.Color;
+
+                await _context.SaveChangesAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }
