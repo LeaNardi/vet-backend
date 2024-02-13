@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using vet_backend.Models;
+using vet_backend.Context;
 
 namespace vet_backend
 {
