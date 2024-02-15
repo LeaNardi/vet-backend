@@ -1,4 +1,4 @@
-﻿    using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using vet_backend.Models;
 using Microsoft.EntityFrameworkCore;
@@ -8,24 +8,26 @@ namespace vet_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MascotaController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public MascotaController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context)
         {
             _context = context;
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
             try
             {
-                var listMascotas = await _context.Mascotas.ToListAsync();
-                return Ok(listMascotas);
+                var listUsers = await _context.Users.ToListAsync();
+                return Ok(listUsers);
             }
-            catch(Exception ex) {
+            catch (Exception ex)
+            {
                 return BadRequest(ex.Message);
             }
         }
@@ -35,12 +37,12 @@ namespace vet_backend.Controllers
         {
             try
             {
-                var mascota = await _context.Mascotas.FindAsync(id);
-                if(mascota == null)
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
                 {
                     return NotFound();
                 }
-                return Ok(mascota);
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -53,14 +55,14 @@ namespace vet_backend.Controllers
         {
             try
             {
-                var mascota = await _context.Mascotas.FindAsync(id);
-                if (mascota == null)
+                var user = await _context.Users.FindAsync(id);
+                if (user == null)
                 {
                     return NotFound();
                 }
-                _context.Mascotas.Remove(mascota);
+                _context.Users.Remove(user);
                 await _context.SaveChangesAsync();
-                return Ok(mascota);
+                return Ok(user);
             }
             catch (Exception ex)
             {
@@ -69,15 +71,15 @@ namespace vet_backend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Post(Mascota mascota)
+        public async Task<IActionResult> Post(User user)
         {
             try
             {
-                mascota.FechaCreacion = DateTime.Now;
-                _context.Add(mascota);
+                user.FechaCreacion = DateTime.Now;
+                _context.Add(user);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("Get", new { id = mascota.Id }, mascota);
+                return CreatedAtAction("Get", new { id = user.Id }, user);
             }
             catch (Exception ex)
             {
@@ -86,26 +88,27 @@ namespace vet_backend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, Mascota mascota)
+        public async Task<IActionResult> Put(int id, User user)
         {
             try
             {
-                if(id != mascota.Id)
+                if (id != user.Id)
                 {
                     return BadRequest();
                 }
 
-                var mascotaBase = await _context.Mascotas.FindAsync(id);
-                if (mascota == null)
+                var userBase = await _context.Users.FindAsync(id);
+                if (user == null)
                 {
                     return NotFound();
                 }
 
-                mascotaBase.Nombre = mascota.Nombre;
-                mascotaBase.Raza = mascota.Raza;
-                mascotaBase.Edad = mascota.Edad;
-                mascotaBase.Peso = mascota.Peso;
-                mascotaBase.Color = mascota.Color;
+                userBase.UserName = user.UserName;
+                userBase.Password = user.Password;
+                userBase.Role = user.Role;
+                userBase.Email = user.Email;
+                userBase.Nombre = user.Nombre;
+                userBase.Apellido = user.Apellido;
 
                 await _context.SaveChangesAsync();
 

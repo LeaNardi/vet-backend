@@ -4,6 +4,7 @@ namespace vet_backend.Models
 {
     public class Mascota
     {
+        [Key]
         public int Id { get; set; }
         public string Nombre { get; set; }
         public string Raza { get; set; }
