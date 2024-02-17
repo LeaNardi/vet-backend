@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using vet_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using vet_backend.Context;
+using Microsoft.AspNetCore.Authorization;
 
 namespace vet_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class MascotaController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
