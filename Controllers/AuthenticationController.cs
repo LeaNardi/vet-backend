@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using vet_backend.Context;
+using vet_backend.Models;
 
 namespace vet_backend.Controllers
 {
@@ -23,9 +24,9 @@ namespace vet_backend.Controllers
 
 
         [HttpPost("authenticate")]
-        public ActionResult<string> Autenticar(string username, string password)
+        public ActionResult<string> Autenticar(AuthenticationRequestBody authRequestBody)
         {
-            var user = _context.Users.FirstOrDefault(p => p.UserName == username && p.Password == password);
+            var user = _context.Users.FirstOrDefault(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
             if (user == null)
             {
                 return Unauthorized();
