@@ -40,8 +40,16 @@ namespace vet_backend
             });
                     });
 
+            // Add context
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
+            });
+
+
+
             // Add authentication
-            builder.Services.AddAuthentication("Bearer") 
+            builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new()
@@ -56,13 +64,8 @@ namespace vet_backend
                 }
             );
 
-            // Add context
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
-            });
 
-            
+
 
             // Cors
             builder.Services.AddCors(options => options.AddPolicy("AllowWebApp",
@@ -70,10 +73,10 @@ namespace vet_backend
                 ));
 
 
-            //Roles
-            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddUserStore<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            ////Roles
+            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            //    .AddUserStore<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
 
 
 
@@ -88,19 +91,19 @@ namespace vet_backend
             }
 
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                var roles = new[] { "Admin", "Manager", "Member" };
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            //    var roles = new[] { "Admin", "Manager", "Member" };
 
-                foreach (var role in roles)
-                {
-                    if (!await roleManager.RoleExistsAsync(role))
-                    {
-                        await roleManager.CreateAsync(new IdentityRole(role));
-                    }
-                }
-            }
+            //    foreach (var role in roles)
+            //    {
+            //        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+            //        {
+            //            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
+            //        }
+            //    }
+            //}
 
 
 
