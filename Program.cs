@@ -3,6 +3,7 @@ using vet_backend.Context;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 
 namespace vet_backend
 {
@@ -69,6 +70,14 @@ namespace vet_backend
                 ));
 
 
+            //Roles
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddUserStore<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
+
+
+
+
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
@@ -77,6 +86,23 @@ namespace vet_backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roles = new[] { "Admin", "Manager", "Member" };
+
+                foreach (var role in roles)
+                {
+                    if (!await roleManager.RoleExistsAsync(role))
+                    {
+                        await roleManager.CreateAsync(new IdentityRole(role));
+                    }
+                }
+            }
+
+
 
             app.UseHttpsRedirection();
 
