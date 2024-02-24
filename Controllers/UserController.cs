@@ -9,7 +9,7 @@ namespace vet_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles ="Admin")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -34,12 +34,12 @@ namespace vet_backend.Controllers
             }
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> Get(int id)
+        [HttpGet("{username}")]
+        public async Task<IActionResult> Get(String username)
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(username);
                 if (user == null)
                 {
                     return NotFound();
@@ -52,12 +52,12 @@ namespace vet_backend.Controllers
             }
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(int id)
+        [HttpDelete("{username}")]
+        public async Task<IActionResult> Delete(String username)
         {
             try
             {
-                var user = await _context.Users.FindAsync(id);
+                var user = await _context.Users.FindAsync(username);
                 if (user == null)
                 {
                     return NotFound();
@@ -77,11 +77,10 @@ namespace vet_backend.Controllers
         {
             try
             {
-                user.FechaCreacion = DateTime.Now;
                 _context.Add(user);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("Get", new { id = user.Id }, user);
+                return CreatedAtAction("Get", new { username = user.UserName }, user);
             }
             catch (Exception ex)
             {
@@ -89,25 +88,24 @@ namespace vet_backend.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Put(int id, User user)
+        [HttpPut("{username}")]
+        public async Task<IActionResult> Put(String username, User user)
         {
             try
             {
-                if (id != user.Id)
+                if (username != user.UserName)
                 {
                     return BadRequest();
                 }
 
-                var userBase = await _context.Users.FindAsync(id);
+                var userBase = await _context.Users.FindAsync(username);
                 if (user == null)
                 {
                     return NotFound();
                 }
 
-                userBase.UserName = user.UserName;
                 userBase.Password = user.Password;
-                userBase.Role = user.Role;
+                //userBase.Role = user.Role;
                 userBase.Email = user.Email;
                 userBase.Nombre = user.Nombre;
                 userBase.Apellido = user.Apellido;

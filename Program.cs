@@ -4,6 +4,12 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using vet_backend.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace vet_backend
 {
@@ -44,8 +50,11 @@ namespace vet_backend
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
-            });
-
+            })
+                .AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                ;
 
 
             // Add authentication
@@ -63,7 +72,6 @@ namespace vet_backend
                     };
                 }
             );
-
 
 
 
@@ -91,21 +99,27 @@ namespace vet_backend
             }
 
 
-            //using (var scope = app.Services.CreateScope())
-            //{
-            //    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            //    var roles = new[] { "Admin", "Manager", "Member" };
-
-            //    foreach (var role in roles)
-            //    {
-            //        if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-            //        {
-            //            roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
-            //        }
-            //    }
-            //}
+            var scope = app.Services.CreateScope();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var roles = new[] { "Administrador", "Secretario", "Veterinario", "Veterinario" };
 
 
+
+            foreach (var role in roles)
+            {
+                if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
+                {
+                    roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
+                }
+            }
+
+
+            var password = "Pedro123!";
+            var user2 = new User { UserName = "pedro", Email = "pedro@gmail.com", Nombre = "Pedro", Apellido = "Perez", Password = password };
+            var result = userManager.CreateAsync(user2, password).GetAwaiter().GetResult();
+
+            userManager.AddToRoleAsync(user2, "Secretario").GetAwaiter().GetResult();
 
             app.UseHttpsRedirection();
 
