@@ -1,15 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using vet_backend.Context;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
+using vet_backend.Context;
 using vet_backend.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+using vet_backend.Helpers;
 
 namespace vet_backend
 {
@@ -54,7 +51,7 @@ namespace vet_backend
                 .AddIdentityCore<User>()
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                ;
+            ;
 
 
             // Add authentication
@@ -81,15 +78,6 @@ namespace vet_backend
                 ));
 
 
-            ////Roles
-            //builder.Services.AddIdentity<IdentityUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddUserStore<ApplicationDbContext>()
-            //    .AddDefaultTokenProviders();
-
-
-
-
-
             var app = builder.Build();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -98,28 +86,11 @@ namespace vet_backend
                 app.UseSwaggerUI();
             }
 
-
+            //Roles
             var scope = app.Services.CreateScope();
-            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            var roles = new[] { "Administrador", "Secretario", "Veterinario", "Veterinario" };
+            var administrarusuarios = new AministrarUsuarios(scope);
+            administrarusuarios.Crear();
 
-
-
-            foreach (var role in roles)
-            {
-                if (!roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
-                {
-                    roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
-                }
-            }
-
-
-            var password = "Pedro123!";
-            var user2 = new User { UserName = "pedro", Email = "pedro@gmail.com", Nombre = "Pedro", Apellido = "Perez", Password = password };
-            var result = userManager.CreateAsync(user2, password).GetAwaiter().GetResult();
-
-            userManager.AddToRoleAsync(user2, "Secretario").GetAwaiter().GetResult();
 
             app.UseHttpsRedirection();
 
@@ -131,7 +102,38 @@ namespace vet_backend
 
             app.MapControllers();
 
+
+            Console.WriteLine("Programa corriendo");
+            var newuser = new User { UserName = "lolo", Email = "lolo@gmail.com", Nombre = "Lolo", Apellido = "Gomez", Password = "pass" };
+            Console.WriteLine($"usuario: {newuser}");
+            var usuario = administrarusuarios._userManager.FindByNameAsync("Agustin").GetAwaiter().GetResult();
+            Console.WriteLine($"usuario: {usuario}");
+            var roles = administrarusuarios._userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
+            foreach (var role in roles)
+            {
+                Console.WriteLine($"role: {role}");
+            }
+
+            Console.WriteLine($"Administrador: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Administrador").GetAwaiter().GetResult()}");
+            Console.WriteLine($"Secretario: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Secretario").GetAwaiter().GetResult()}");
+
+
+            var usuario2 = administrarusuarios._userManager.FindByNameAsync("Benjamin").GetAwaiter().GetResult();
+            if (usuario2 != null)
+            {
+                Console.WriteLine("Usuario Benjamin existe");
+
+            }
+            else
+            {
+                Console.WriteLine("NOOOO existe Benjamin");
+
+            }
+            Console.WriteLine($"usuario2: {usuario2}");
+
             app.Run();
+
+
         }
     }
 }

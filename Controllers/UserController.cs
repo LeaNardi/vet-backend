@@ -9,7 +9,7 @@ namespace vet_backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Administrador")]
     public class UserController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
