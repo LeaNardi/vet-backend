@@ -71,7 +71,6 @@ namespace vet_backend
             );
 
 
-
             // Cors
             builder.Services.AddCors(options => options.AddPolicy("AllowWebApp",
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
@@ -87,9 +86,9 @@ namespace vet_backend
             }
 
             //Roles
-            var scope = app.Services.CreateScope();
-            var administrarusuarios = new AministrarUsuarios(scope);
-            administrarusuarios.Crear();
+            //var scope = app.Services.CreateScope();
+            //var administrarusuarios = new AministrarUsuarios(scope);
+            //administrarusuarios.Crear();
 
 
             app.UseHttpsRedirection();
@@ -102,37 +101,9 @@ namespace vet_backend
 
             app.MapControllers();
 
-
-            Console.WriteLine("Programa corriendo");
-            //var newuser = new User { UserName = "lolo", Email = "lolo@gmail.com", Nombre = "Lolo", Apellido = "Gomez", Password = "pass" };
-            //Console.WriteLine($"usuario: {newuser}");
-            //var usuario = administrarusuarios._userManager.FindByNameAsync("Agustin").GetAwaiter().GetResult();
-            //Console.WriteLine($"usuario: {usuario}");
-            //var roles = administrarusuarios._userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
-            //foreach (var role in roles)
-            //{
-            //    Console.WriteLine($"role: {role}");
-            //}
-
-            //Console.WriteLine($"Administrador: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Administrador").GetAwaiter().GetResult()}");
-            //Console.WriteLine($"Secretario: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Secretario").GetAwaiter().GetResult()}");
-
-
-            var usuario2 = administrarusuarios._userManager.FindByNameAsync("Benjamin").GetAwaiter().GetResult();
-            if (usuario2 != null)
-            {
-                Console.WriteLine("Usuario Benjamin existe");
-
-            }
-            else
-            {
-                Console.WriteLine("NOOOO existe Benjamin");
-
-            }
-            Console.WriteLine($"usuario2: {usuario2}");
+            Console.WriteLine("App Veterinaria Running");
 
             app.Run();
-
 
         }
     }
