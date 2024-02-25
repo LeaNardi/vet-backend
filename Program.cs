@@ -104,18 +104,18 @@ namespace vet_backend
 
 
             Console.WriteLine("Programa corriendo");
-            var newuser = new User { UserName = "lolo", Email = "lolo@gmail.com", Nombre = "Lolo", Apellido = "Gomez", Password = "pass" };
-            Console.WriteLine($"usuario: {newuser}");
-            var usuario = administrarusuarios._userManager.FindByNameAsync("Agustin").GetAwaiter().GetResult();
-            Console.WriteLine($"usuario: {usuario}");
-            var roles = administrarusuarios._userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
-            foreach (var role in roles)
-            {
-                Console.WriteLine($"role: {role}");
-            }
+            //var newuser = new User { UserName = "lolo", Email = "lolo@gmail.com", Nombre = "Lolo", Apellido = "Gomez", Password = "pass" };
+            //Console.WriteLine($"usuario: {newuser}");
+            //var usuario = administrarusuarios._userManager.FindByNameAsync("Agustin").GetAwaiter().GetResult();
+            //Console.WriteLine($"usuario: {usuario}");
+            //var roles = administrarusuarios._userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
+            //foreach (var role in roles)
+            //{
+            //    Console.WriteLine($"role: {role}");
+            //}
 
-            Console.WriteLine($"Administrador: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Administrador").GetAwaiter().GetResult()}");
-            Console.WriteLine($"Secretario: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Secretario").GetAwaiter().GetResult()}");
+            //Console.WriteLine($"Administrador: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Administrador").GetAwaiter().GetResult()}");
+            //Console.WriteLine($"Secretario: {administrarusuarios._userManager.IsInRoleAsync(usuario, "Secretario").GetAwaiter().GetResult()}");
 
 
             var usuario2 = administrarusuarios._userManager.FindByNameAsync("Benjamin").GetAwaiter().GetResult();

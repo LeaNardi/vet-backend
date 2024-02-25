@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Runtime.Intrinsics.X86;
 using vet_backend.Models;
 
 
@@ -28,6 +29,43 @@ namespace vet_backend.Helpers
                     _roleManager.CreateAsync(new IdentityRole(role)).GetAwaiter().GetResult();
                 }
             }
+
+
+
+            var usuarios = new[] { "leandro", "rosa", "felipe", "melina" };
+
+
+            string password;
+            User user;
+            User usuarioexiste;
+
+            foreach (var usuario in usuarios)
+            {
+                password = usuario + "Xx123!";
+                user = new User { UserName = usuario, Email = usuario + "@gmail.com", Nombre = usuario, Apellido = "Garcia", Password = password };
+                usuarioexiste = _userManager.FindByNameAsync(usuario).GetAwaiter().GetResult();
+                if (usuarioexiste == null)
+                {
+                    _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
+                    _userManager.AddToRoleAsync(user, "Veterinario").GetAwaiter().GetResult();
+                }
+
+            }
+
+            var usuarios_admin = new[] { "leandro", "rosa"};
+
+            foreach (var usuario in usuarios_admin)
+            {
+                usuarioexiste = _userManager.FindByNameAsync(usuario).GetAwaiter().GetResult();
+                if (usuarioexiste != null)
+                {
+                    _userManager.AddToRoleAsync(usuarioexiste, "Administrador").GetAwaiter().GetResult();
+                }
+
+            }
+
+
+
 
             //IdentityResult result;
 
