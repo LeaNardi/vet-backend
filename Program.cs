@@ -76,6 +76,7 @@ namespace vet_backend
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
                 ));
 
+            builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
@@ -85,10 +86,10 @@ namespace vet_backend
                 app.UseSwaggerUI();
             }
 
-            //Roles
-            //var scope = app.Services.CreateScope();
-            //var administrarusuarios = new AministrarUsuarios(scope);
-            //administrarusuarios.Crear();
+            //Roles and users
+            var scope = app.Services.CreateScope();
+            var administrarusuarios = new AministrarUsuarios(scope);
+            administrarusuarios.Crear();
 
 
             app.UseHttpsRedirection();

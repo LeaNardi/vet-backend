@@ -12,6 +12,9 @@ namespace vet_backend.Context
         public DbSet<Mascota> Mascotas { get; set; }
 
         public DbSet<User> Users { get; set; }
+
+        public DbSet<Raza> Razas { get; set; }
+
     }
 
 }

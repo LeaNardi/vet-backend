@@ -12,8 +12,8 @@ using vet_backend.Context;
 namespace vet_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240224183536_forth")]
-    partial class forth
+    [Migration("20240227232957_vet7")]
+    partial class vet7
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -157,17 +157,33 @@ namespace vet_backend.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("vet_backend.Models.Mascota", b =>
+            modelBuilder.Entity("vet_backend.Models.Color", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ColorId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ColorId"), 1L, 1);
 
-                    b.Property<string>("Color")
+                    b.Property<string>("ColorNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ColorId");
+
+                    b.ToTable("Color");
+                });
+
+            modelBuilder.Entity("vet_backend.Models.Mascota", b =>
+                {
+                    b.Property<int>("MascotaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MascotaId"), 1L, 1);
+
+                    b.Property<int>("ColorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Edad")
                         .HasColumnType("int");
@@ -182,13 +198,33 @@ namespace vet_backend.Migrations
                     b.Property<float>("Peso")
                         .HasColumnType("real");
 
-                    b.Property<string>("Raza")
+                    b.Property<int>("RazaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MascotaId");
+
+                    b.HasIndex("ColorId");
+
+                    b.HasIndex("RazaId");
+
+                    b.ToTable("Mascotas");
+                });
+
+            modelBuilder.Entity("vet_backend.Models.Raza", b =>
+                {
+                    b.Property<int>("RazaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RazaId"), 1L, 1);
+
+                    b.Property<string>("RazaNombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RazaId");
 
-                    b.ToTable("Mascotas");
+                    b.ToTable("Razas");
                 });
 
             modelBuilder.Entity("vet_backend.Models.User", b =>
@@ -317,6 +353,25 @@ namespace vet_backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("vet_backend.Models.Mascota", b =>
+                {
+                    b.HasOne("vet_backend.Models.Color", "Color")
+                        .WithMany()
+                        .HasForeignKey("ColorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("vet_backend.Models.Raza", "Raza")
+                        .WithMany()
+                        .HasForeignKey("RazaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Color");
+
+                    b.Navigation("Raza");
                 });
 #pragma warning restore 612, 618
         }

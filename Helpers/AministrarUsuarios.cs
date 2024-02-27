@@ -32,7 +32,7 @@ namespace vet_backend.Helpers
 
 
 
-            var usuarios = new[] { "leandro", "rosa", "felipe", "melina" };
+            var usuarios = new[] { "leandro", "rosa", "felipe", "romina" };
 
 
             string password;
