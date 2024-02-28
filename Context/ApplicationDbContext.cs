@@ -15,6 +15,9 @@ namespace vet_backend.Context
 
         public DbSet<Raza> Razas { get; set; }
 
+        public DbSet<Color> Colores { get; set; }
+
+
     }
 
 }
