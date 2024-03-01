@@ -1,8 +1,12 @@
 using Microsoft.EntityFrameworkCore;
-using vet_backend.Context;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.DependencyInjection;
+using vet_backend.Context;
+using vet_backend.Models;
+using vet_backend.Helpers;
 
 namespace vet_backend
 {
@@ -39,8 +43,19 @@ namespace vet_backend
             });
                     });
 
+            // Add context
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            {
+                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
+            })
+                .AddIdentityCore<User>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+            ;
+
+
             // Add authentication
-            builder.Services.AddAuthentication("Bearer") 
+            builder.Services.AddAuthentication("Bearer")
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new()
@@ -55,20 +70,13 @@ namespace vet_backend
                 }
             );
 
-            // Add context
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
-            });
-
-            
 
             // Cors
             builder.Services.AddCors(options => options.AddPolicy("AllowWebApp",
                     builder => builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
                 ));
 
-
+            builder.Services.AddControllers(options => options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true);
 
             var app = builder.Build();
             // Configure the HTTP request pipeline.
@@ -77,6 +85,12 @@ namespace vet_backend
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            //Roles and users
+            var scope = app.Services.CreateScope();
+            var administrarusuarios = new DatosIniciales(scope);
+            administrarusuarios.Crear();
+
 
             app.UseHttpsRedirection();
 
@@ -88,7 +102,10 @@ namespace vet_backend
 
             app.MapControllers();
 
+            Console.WriteLine("App Veterinaria Running");
+
             app.Run();
+
         }
     }
 }

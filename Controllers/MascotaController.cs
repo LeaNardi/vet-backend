@@ -4,6 +4,7 @@ using vet_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using vet_backend.Context;
 using Microsoft.AspNetCore.Authorization;
+using System.ComponentModel;
 
 namespace vet_backend.Controllers
 {
@@ -25,6 +26,16 @@ namespace vet_backend.Controllers
             try
             {
                 var listMascotas = await _context.Mascotas.ToListAsync();
+                //.Include(mascota => mascota.Raza)
+                //.Include(mascota => mascota.Color)
+
+                //var nuevolistado = listMascotas.Select(m => new{ 
+                //    id = m.MascotaId, 
+                //    nombre = m.Nombre, 
+                //    raza = m.Raza.RazaNombre,
+                //    color = m.Color.ColorNombre
+                //});
+
                 return Ok(listMascotas);
             }
             catch(Exception ex) {
@@ -37,12 +48,21 @@ namespace vet_backend.Controllers
         {
             try
             {
-                var mascota = await _context.Mascotas.FindAsync(id);
+                var mascota = await _context.Mascotas
+                    .SingleOrDefaultAsync(m => m.MascotaId == id);
                 if(mascota == null)
                 {
                     return NotFound();
                 }
-                return Ok(mascota);
+                var nuevaMascota = new { 
+                    id = mascota.MascotaId, 
+                    nombre = mascota.Nombre,
+                    edad = mascota.Edad,
+                    peso = mascota.Peso,
+                    razaId = mascota.RazaId,
+                    colorId = mascota.ColorId
+                };
+                return Ok(nuevaMascota);
             }
             catch (Exception ex)
             {
@@ -79,7 +99,7 @@ namespace vet_backend.Controllers
                 _context.Add(mascota);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction("Get", new { id = mascota.Id }, mascota);
+                return CreatedAtAction("Get", new { id = mascota.MascotaId }, mascota);
             }
             catch (Exception ex)
             {
@@ -92,7 +112,7 @@ namespace vet_backend.Controllers
         {
             try
             {
-                if(id != mascota.Id)
+                if(id != mascota.MascotaId)
                 {
                     return BadRequest();
                 }
@@ -104,10 +124,10 @@ namespace vet_backend.Controllers
                 }
 
                 mascotaBase.Nombre = mascota.Nombre;
-                mascotaBase.Raza = mascota.Raza;
                 mascotaBase.Edad = mascota.Edad;
                 mascotaBase.Peso = mascota.Peso;
-                mascotaBase.Color = mascota.Color;
+                mascotaBase.RazaId = mascota.RazaId;
+                mascotaBase.ColorId = mascota.ColorId;
 
                 await _context.SaveChangesAsync();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using vet_backend.Context;
 
@@ -11,9 +12,10 @@ using vet_backend.Context;
 namespace vet_backend.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240228225030_vet7-2")]
+    partial class vet72
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,31 +172,6 @@ namespace vet_backend.Migrations
                     b.HasKey("ColorId");
 
                     b.ToTable("Colores");
-                });
-
-            modelBuilder.Entity("vet_backend.Models.Historia", b =>
-                {
-                    b.Property<int>("HistoriaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("HistoriaId"), 1L, 1);
-
-                    b.Property<string>("Detalle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("Fecha")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("MascotaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("HistoriaId");
-
-                    b.HasIndex("MascotaId");
-
-                    b.ToTable("Historias");
                 });
 
             modelBuilder.Entity("vet_backend.Models.Mascota", b =>
@@ -376,17 +353,6 @@ namespace vet_backend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("vet_backend.Models.Historia", b =>
-                {
-                    b.HasOne("vet_backend.Models.Mascota", "Mascota")
-                        .WithMany()
-                        .HasForeignKey("MascotaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Mascota");
                 });
 
             modelBuilder.Entity("vet_backend.Models.Mascota", b =>
