@@ -17,6 +17,9 @@ namespace vet_backend.Context
 
         public DbSet<Color> Colores { get; set; }
 
+        public DbSet<Historia> Historias { get; set; }
+
+
 
     }
 

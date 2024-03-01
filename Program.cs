@@ -88,7 +88,7 @@ namespace vet_backend
 
             //Roles and users
             var scope = app.Services.CreateScope();
-            var administrarusuarios = new AministrarUsuarios(scope);
+            var administrarusuarios = new DatosIniciales(scope);
             administrarusuarios.Crear();
 
 

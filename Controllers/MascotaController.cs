@@ -25,18 +25,18 @@ namespace vet_backend.Controllers
         {
             try
             {
-                var listMascotas = await _context.Mascotas
-                    .Include(mascota => mascota.Raza)
-                    .Include(mascota => mascota.Color)
-                    .ToListAsync();
-                var nuevolistado = listMascotas.Select(m => new{ 
-                    id = m.MascotaId, 
-                    nombre = m.Nombre, 
-                    raza = m.Raza.RazaNombre,
-                    color = m.Color.ColorNombre
-                });
+                var listMascotas = await _context.Mascotas.ToListAsync();
+                //.Include(mascota => mascota.Raza)
+                //.Include(mascota => mascota.Color)
 
-                return Ok(nuevolistado);
+                //var nuevolistado = listMascotas.Select(m => new{ 
+                //    id = m.MascotaId, 
+                //    nombre = m.Nombre, 
+                //    raza = m.Raza.RazaNombre,
+                //    color = m.Color.ColorNombre
+                //});
+
+                return Ok(listMascotas);
             }
             catch(Exception ex) {
                 return BadRequest(ex.Message);
@@ -49,8 +49,6 @@ namespace vet_backend.Controllers
             try
             {
                 var mascota = await _context.Mascotas
-                    .Include(mascota => mascota.Raza)
-                    .Include(mascota => mascota.Color)
                     .SingleOrDefaultAsync(m => m.MascotaId == id);
                 if(mascota == null)
                 {
@@ -59,10 +57,10 @@ namespace vet_backend.Controllers
                 var nuevaMascota = new { 
                     id = mascota.MascotaId, 
                     nombre = mascota.Nombre,
-                    raza = mascota.Raza.RazaNombre,
-                    color = mascota.Color.ColorNombre,
                     edad = mascota.Edad,
-                    peso = mascota.Peso
+                    peso = mascota.Peso,
+                    razaId = mascota.RazaId,
+                    colorId = mascota.ColorId
                 };
                 return Ok(nuevaMascota);
             }
@@ -126,10 +124,10 @@ namespace vet_backend.Controllers
                 }
 
                 mascotaBase.Nombre = mascota.Nombre;
-                mascotaBase.Raza = mascota.Raza;
                 mascotaBase.Edad = mascota.Edad;
                 mascotaBase.Peso = mascota.Peso;
-                mascotaBase.Color = mascota.Color;
+                mascotaBase.RazaId = mascota.RazaId;
+                mascotaBase.ColorId = mascota.ColorId;
 
                 await _context.SaveChangesAsync();
 
