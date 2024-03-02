@@ -10,7 +10,6 @@ namespace vet_backend.Models
     {
         [Key]
         public int ColorId { get; set; }
-
         public string ColorNombre { get; set; }
     }
 }

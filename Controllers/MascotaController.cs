@@ -26,15 +26,6 @@ namespace vet_backend.Controllers
             try
             {
                 var listMascotas = await _context.Mascotas.ToListAsync();
-                //.Include(mascota => mascota.Raza)
-                //.Include(mascota => mascota.Color)
-
-                //var nuevolistado = listMascotas.Select(m => new{ 
-                //    id = m.MascotaId, 
-                //    nombre = m.Nombre, 
-                //    raza = m.Raza.RazaNombre,
-                //    color = m.Color.ColorNombre
-                //});
 
                 return Ok(listMascotas);
             }
