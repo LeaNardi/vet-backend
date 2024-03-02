@@ -17,14 +17,14 @@ namespace vet_backend.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Get(int id)
         {
             try
             {
-                var historia = await _context.Historias.ToListAsync();
-                    
-                return Ok(historia);
+                var historias = _context.Historias.Where(e => e.MascotaId == id);
+
+                return Ok(historias);
             }
             catch (Exception ex)
             {

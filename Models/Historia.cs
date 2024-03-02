@@ -10,6 +10,7 @@ namespace vet_backend.Models
         [Key]
         public int HistoriaId { get; set; }
         public DateTime Fecha { get; set; }
+        public string Veterinario { get; set; }
         public string Detalle { get; set; }
         public int MascotaId { get; set; }
         [ForeignKey("MascotaId")]
