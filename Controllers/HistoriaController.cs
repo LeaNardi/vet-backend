@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using vet_backend.Context;
+using vet_backend.Models;
 
 namespace vet_backend.Controllers
 {
@@ -25,6 +26,24 @@ namespace vet_backend.Controllers
                 var historias = _context.Historias.Where(e => e.MascotaId == id);
 
                 return Ok(historias);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("{id}")]
+        public async Task<IActionResult> Post(int id, Historia historia)
+        {
+            try
+            {
+                historia.Fecha = DateTime.Now;
+                historia.MascotaId = id;
+                _context.Add(historia);
+                await _context.SaveChangesAsync();
+
+                return CreatedAtAction("Get", new { id = historia.HistoriaId }, historia);
             }
             catch (Exception ex)
             {
