@@ -84,12 +84,12 @@ namespace vet_backend.Controllers
             }
         }
 
-        [HttpDelete("{username}")]
-        public async Task<IActionResult> Delete(String username)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(String id)
         {
             try
             {
-                var user = _userManager.FindByNameAsync(username).GetAwaiter().GetResult();
+                var user = _userManager.FindByIdAsync(id).GetAwaiter().GetResult();
                 if (user == null)
                 {
                     return NotFound();
@@ -126,29 +126,37 @@ namespace vet_backend.Controllers
             }
         }
 
-        [HttpPut("{username}")]
-        public async Task<IActionResult> Put(String username, User user)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(String id, User user, string role)
         {
             try
             {
-                if (username != user.UserName)
+                if (id != user.Id)
                 {
                     return BadRequest();
                 }
 
-                var userBase = await _context.Users.FindAsync(username);
-                if (user == null)
+                var existingUser = _userManager.FindByIdAsync(id).GetAwaiter().GetResult();
+                if (existingUser == null)
                 {
                     return NotFound();
                 }
 
-                userBase.Password = user.Password;
-                //userBase.Role = user.Role;
-                userBase.Email = user.Email;
-                userBase.Nombre = user.Nombre;
-                userBase.Apellido = user.Apellido;
+                existingUser.Nombre = user.Nombre;
+                existingUser.Apellido = user.Apellido;
+                existingUser.Email = user.Email;
+                if (user.Password != "empty")
+                {
+                    existingUser.Password = user.Password;
+                }
 
-                await _context.SaveChangesAsync();
+                _userManager.UpdateAsync(existingUser).GetAwaiter().GetResult();
+
+
+                var roles = _userManager.GetRolesAsync(existingUser).GetAwaiter().GetResult();
+                _userManager.RemoveFromRolesAsync(existingUser, roles).GetAwaiter().GetResult();
+                _userManager.AddToRoleAsync(existingUser, role).GetAwaiter().GetResult();
+
 
                 return NoContent();
             }
