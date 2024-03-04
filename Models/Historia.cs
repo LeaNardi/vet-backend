@@ -16,7 +16,5 @@ namespace vet_backend.Models
         [ForeignKey("MascotaId")]
         [JsonIgnore]
         public Mascota Mascota { get; set; }
-
-
     }
 }

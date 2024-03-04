@@ -10,7 +10,6 @@ namespace vet_backend.Models
     {
         [Key]
         public int RazaId { get; set; }
-
         public string RazaNombre { get; set; }
     }
 }

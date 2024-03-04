@@ -16,12 +16,11 @@ namespace vet_backend.Helpers
             _roleManager = _scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         }
 
-        public void Crear() { 
+        public void Crear() {
+            // Crea datos iniciales para que existan roles y usuarios
 
+            // Creacion de roles
             var roles = new[] { "Administrador", "Secretario" };
-
-
-
             foreach (var role in roles)
             {
                 if (!_roleManager.RoleExistsAsync(role).GetAwaiter().GetResult())
@@ -30,16 +29,14 @@ namespace vet_backend.Helpers
                 }
             }
 
-
-
-            var usuarios = new[] { "leandro", "rosa", "felipe", "romina" };
-
+            // Creacion de usuarios con rol de administrador
+            var usuarios_admin = new[] { "leandro", "rosa" };
 
             string password;
             User user;
             User usuarioexiste;
 
-            foreach (var usuario in usuarios)
+            foreach (var usuario in usuarios_admin)
             {
                 password = usuario + "Xx123!";
                 user = new User { UserName = usuario, Email = usuario + "@gmail.com", Nombre = usuario, Apellido = "Garcia", Password = password };
@@ -47,35 +44,24 @@ namespace vet_backend.Helpers
                 if (usuarioexiste == null)
                 {
                     _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
-                    //_userManager.AddToRoleAsync(user, "Veterinario").GetAwaiter().GetResult();
+                    _userManager.AddToRoleAsync(user, "Administrador").GetAwaiter().GetResult();
                 }
-
             }
 
-            var usuarios_admin = new[] { "leandro", "rosa"};
-
-            foreach (var usuario in usuarios_admin)
-            {
-                usuarioexiste = _userManager.FindByNameAsync(usuario).GetAwaiter().GetResult();
-                if (usuarioexiste != null)
-                {
-                    _userManager.AddToRoleAsync(usuarioexiste, "Administrador").GetAwaiter().GetResult();
-                }
-
-            }
-
+            // Creacion de usuarios con rol de Secretario
             var usuarios_secret = new[] { "felipe", "romina" };
 
             foreach (var usuario in usuarios_secret)
             {
+                password = usuario + "Xx123!";
+                user = new User { UserName = usuario, Email = usuario + "@gmail.com", Nombre = usuario, Apellido = "Garcia", Password = password };
                 usuarioexiste = _userManager.FindByNameAsync(usuario).GetAwaiter().GetResult();
-                if (usuarioexiste != null)
+                if (usuarioexiste == null)
                 {
-                    _userManager.AddToRoleAsync(usuarioexiste, "Secretario").GetAwaiter().GetResult();
+                    _userManager.CreateAsync(user, password).GetAwaiter().GetResult();
+                    _userManager.AddToRoleAsync(user, "Secretario").GetAwaiter().GetResult();
                 }
-
             }
-
         }
     }
 }

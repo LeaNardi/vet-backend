@@ -19,8 +19,5 @@ namespace vet_backend.Context
 
         public DbSet<Historia> Historias { get; set; }
 
-
-
     }
-
 }

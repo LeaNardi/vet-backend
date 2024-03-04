@@ -28,8 +28,6 @@ namespace vet_backend.Controllers
             _config = config;
             _serviceProvider = serviceProvider;
             _scope = _serviceProvider.CreateScope();
-            Console.WriteLine("AuthenticationController started");
-
         }
 
 
@@ -53,12 +51,10 @@ namespace vet_backend.Controllers
 
             //Roles
             var usuario = _userManager.FindByNameAsync(authRequestBody.UserName).GetAwaiter().GetResult();
-            //Console.WriteLine($"usuario: {usuario}");
             var roles = _userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
             foreach (var role in roles)
             {
                 claimsForToken.Add(new Claim("roles", role));
-                //Console.WriteLine($"role: {role}");
             }
 
             var jwtSecurityToken = new JwtSecurityToken(

@@ -23,35 +23,35 @@ namespace vet_backend
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(setupAction =>
                     {
-                        setupAction.AddSecurityDefinition("VeterinariaBearerAuth", new OpenApiSecurityScheme() //Esto va a permitir usar swagger con el token.
-                        {
-                            Type = SecuritySchemeType.Http,
-                            Scheme = "Bearer",
-                            Description = "Acá pegar el token generado al loguearse."
-                        });
+                        setupAction.AddSecurityDefinition("VeterinariaBearerAuth", new OpenApiSecurityScheme()
+                            {
+                                Type = SecuritySchemeType.Http,
+                                Scheme = "Bearer",
+                                Description = "Acá pegar el token generado al loguearse."
+                            });
 
                         setupAction.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "VeterinariaBearerAuth" } //Tiene que coincidir con el id seteado arriba en la definición
-                        }, new List<string>() }
-            });
+                            {
+                                {
+                                    new OpenApiSecurityScheme
+                                        {
+                                            Reference = new OpenApiReference
+                                            {
+                                                Type = ReferenceType.SecurityScheme,
+                                                Id = "VeterinariaBearerAuth" }
+                                        }, new List<string>() }
+                            });
                     });
 
             // Add context
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            {
-                options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
-            })
-                .AddIdentityCore<User>()
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-            ;
+                {
+                    options.UseSqlServer(builder.Configuration.GetConnectionString("Conexion01"));
+                })
+                    .AddIdentityCore<User>()
+                    .AddRoles<IdentityRole>()
+                    .AddEntityFrameworkStores<ApplicationDbContext>();
+            
 
 
             // Add authentication

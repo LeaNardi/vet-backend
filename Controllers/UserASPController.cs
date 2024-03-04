@@ -13,13 +13,11 @@ namespace vet_backend.Controllers
     [Authorize(Roles = "Administrador")]
     public class UserASPController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         public UserManager<User> _userManager;
         public RoleManager<IdentityRole> _roleManager;
 
-        public UserASPController(ApplicationDbContext context, UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
+        public UserASPController(UserManager<User> userManager, RoleManager<IdentityRole> roleManager)
         {
-            _context = context;
             _userManager = userManager;
             _roleManager = roleManager;
         }
@@ -29,7 +27,6 @@ namespace vet_backend.Controllers
         {
             try
             {
-                //var listUsers = await _context.Users.ToListAsync();
                 var listUsersASP = _userManager.Users.ToListAsync().GetAwaiter().GetResult();
                 List< UserResponse> filteredUsers = new List<UserResponse>();
 
@@ -115,8 +112,6 @@ namespace vet_backend.Controllers
                     _userManager.CreateAsync(user, user.Password).GetAwaiter().GetResult();
                     _userManager.AddToRoleAsync(user, role).GetAwaiter().GetResult();
                 }
-                //_context.Add(user);
-                //await _context.SaveChangesAsync();
 
                 return CreatedAtAction("Get", new { username = user.UserName }, user);
             }
