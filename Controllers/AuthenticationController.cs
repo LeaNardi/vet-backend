@@ -17,32 +17,38 @@ namespace vet_backend.Controllers
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
         private readonly IConfiguration _config;
         IServiceProvider _serviceProvider;
         IServiceScope _scope;
+        UserManager<User> _userManager;
 
         public AuthenticationController(ApplicationDbContext context, IConfiguration config, IServiceProvider serviceProvider)
         {
-            _context = context;
             _config = config;
             _serviceProvider = serviceProvider;
             _scope = _serviceProvider.CreateScope();
+            _userManager = _scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
         }
 
 
         [HttpPost("authenticate")]
         public ActionResult<string> Autenticar(AuthenticationRequestBody authRequestBody)
         {
-            var user = _context.Users.FirstOrDefault(p => p.UserName == authRequestBody.UserName && p.Password == authRequestBody.Password);
+            var user = _userManager.FindByNameAsync(authRequestBody.UserName).GetAwaiter().GetResult();
             if (user == null)
             {
                 return Unauthorized();
             }
+            var check_password = _userManager.CheckPasswordAsync(user, authRequestBody.Password).GetAwaiter().GetResult();
+            if (!check_password)
+            {
+                return Unauthorized();
+            }
+
 
             var securityPassword = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_config["Authentication:SecretForKey"]));
             var credentials = new SigningCredentials(securityPassword, SecurityAlgorithms.HmacSha256);
-            var _userManager = _scope.ServiceProvider.GetRequiredService<UserManager<User>>();
 
             var claimsForToken = new List<Claim>();
             claimsForToken.Add(new Claim("sub", user.Id.ToString()));
@@ -50,8 +56,7 @@ namespace vet_backend.Controllers
             claimsForToken.Add(new Claim("family_name", user.Apellido));
 
             //Roles
-            var usuario = _userManager.FindByNameAsync(authRequestBody.UserName).GetAwaiter().GetResult();
-            var roles = _userManager.GetRolesAsync(usuario).GetAwaiter().GetResult();
+            var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
             foreach (var role in roles)
             {
                 claimsForToken.Add(new Claim("roles", role));
@@ -69,7 +74,5 @@ namespace vet_backend.Controllers
 
             return Ok(tokenToReturn);
         }
-
-
     }
 }
