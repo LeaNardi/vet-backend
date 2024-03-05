@@ -10,7 +10,7 @@ namespace vet_backend.Models
         [Required]
         public string Apellido { get; set; }
         [Required]
-        public string Password { get; set; } // Usada temporalmente hasta comparar con el Hash
+        public string Password { get; set; } // No se usa. Es solo para que quede guardada mientras se hacen las pruebas. Se compara con el Hash
         // Propiedades heredadas de IdentityUser:
         //string Id
         //string UserName
