@@ -64,7 +64,7 @@ namespace vet_backend.Controllers
                     return NotFound();
                 }
                 var roles = _userManager.GetRolesAsync(user).GetAwaiter().GetResult();
-                var userRed = new
+                var userRed = new UserResponse
                 {
                     id = user.Id,
                     nombre = user.Nombre,
